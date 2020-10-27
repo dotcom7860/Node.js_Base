@@ -123,7 +123,7 @@ var app = http.createServer(function(request,response){
     request.on('end',function(){
       var post = qs.parse(body);
       var id = post.id;
-      fs.unlink(`data/${id}`,(err)=>{
+      fs.unlink(`data/${id}`,(err)=>{ //파일을 삭제할 때 사용(삭제할 파일,(콜백함수))
         response.writeHead(302, {Location: `/`});
         response.end();
       });
