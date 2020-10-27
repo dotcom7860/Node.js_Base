@@ -26,7 +26,14 @@ var app = http.createServer(function(request,response){
           fs.readFile(`./data/${queryData.id}`,'utf8',(err, description) => {
             var title = queryData.id; //주소의 id값을 가져옴
             var list = templates.templateList(files);
-            var template = templates.templateHTML(title, list, `<h2>${title}</h2>${description}`,`<a href="/create">create</a> <a href="/update?id=${title}">update</a>`);
+            var template = templates.templateHTML(title, list, `<h2>${title}</h2>${description}`,
+            `<a href="/create">create</a> 
+            <a href="/update?id=${title}">update</a> 
+            <form action="/delete_process" method="post">
+              <input type="hidden" name="id" value="${title}">
+              <input type="submit" value="delete">
+            </form>
+            `);
             response.writeHead(200);
             response.end(template);
           });
@@ -90,11 +97,11 @@ var app = http.createServer(function(request,response){
   });
   }else if(pathname === '/update_process'){
     var body = '';
-    //post방식으로 넘어온 데이터를 받는 방법
-    request.on('data',function(data){//data에 데이터를 하나씩 가져오며 콜백함수에 실행시키다가
+
+    request.on('data',function(data){
       body = body + data;
     });
-    request.on('end',function(){//없으면 마지막으로 end로 넘어와서 콜백함수를 실행함
+    request.on('end',function(){
       var post = qs.parse(body);
       var id = post.id;
       var title = post.title;
@@ -104,6 +111,20 @@ var app = http.createServer(function(request,response){
       })
       fs.writeFile(`./data/${title}`,description,'utf8',(err)=>{
         response.writeHead(302, {Location: `/?id=${title}`});
+        response.end();
+      });
+    });
+  }else if(pathname === '/delete_process'){
+    var body = '';
+
+    request.on('data',function(data){
+      body = body + data;
+    });
+    request.on('end',function(){
+      var post = qs.parse(body);
+      var id = post.id;
+      fs.unlink(`data/${id}`,(err)=>{
+        response.writeHead(302, {Location: `/`});
         response.end();
       });
     });
