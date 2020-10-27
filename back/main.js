@@ -88,6 +88,25 @@ var app = http.createServer(function(request,response){
         response.end(template);
       });
   });
+  }else if(pathname === '/update_process'){
+    var body = '';
+    //post방식으로 넘어온 데이터를 받는 방법
+    request.on('data',function(data){//data에 데이터를 하나씩 가져오며 콜백함수에 실행시키다가
+      body = body + data;
+    });
+    request.on('end',function(){//없으면 마지막으로 end로 넘어와서 콜백함수를 실행함
+      var post = qs.parse(body);
+      var id = post.id;
+      var title = post.title;
+      var description = post.description;
+      fs.rename(`data/${id}`, `data/${title}`,function(err){
+        console.log(err);
+      })
+      fs.writeFile(`./data/${title}`,description,'utf8',(err)=>{
+        response.writeHead(302, {Location: `/?id=${title}`});
+        response.end();
+      });
+    });
   }
   else{
     response.writeHead(404);
