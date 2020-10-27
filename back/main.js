@@ -16,7 +16,7 @@ var app = http.createServer(function(request,response){
           var title = 'Welcome';
           var description = 'Hello, Node.js';
           var list = templates.templateList(files);
-          var template = templates.templateHTML(title, list, `<h2>${title}</h2>${description}`);//``:template Literal를 사용하여 값을 넘겨줄 수도 있다.
+          var template = templates.templateHTML(title, list, `<h2>${title}</h2>${description}`,`<a href="./create">create</a>`);//``:template Literal를 사용하여 값을 넘겨줄 수도 있다.
           response.writeHead(200);
           response.end(template);
         });
@@ -26,7 +26,7 @@ var app = http.createServer(function(request,response){
           fs.readFile(`./data/${queryData.id}`,'utf8',(err, description) => {
             var title = queryData.id; //주소의 id값을 가져옴
             var list = templates.templateList(files);
-            var template = templates.templateHTML(title, list, `<h2>${title}</h2>${description}`);
+            var template = templates.templateHTML(title, list, `<h2>${title}</h2>${description}`,`<a href="/create">create</a> <a href="/update?id=${title}">update</a>`);
             response.writeHead(200);
             response.end(template);
           });
@@ -37,7 +37,7 @@ var app = http.createServer(function(request,response){
       var title = 'WEB - create';
       var list = templates.templateList(files);
       var template = templates.templateHTML(title, list, `
-      <form action="http://localhost:3001/create_process" method="POST">
+      <form action="/create_process" method="POST">
         <p><input type="text" name="title" placeholder="title"></p>
         <p>
             <textarea name="description" placeholder="description"></textarea>
@@ -46,7 +46,7 @@ var app = http.createServer(function(request,response){
             <input type="submit" value="Submit">
         </p>
       </form>
-      `);//``:template Literal를 사용하여 값을 넘겨줄 수도 있다.
+      `,'');//``:template Literal를 사용하여 값을 넘겨줄 수도 있다.
       response.writeHead(200);
       response.end(template);
     });
@@ -66,6 +66,28 @@ var app = http.createServer(function(request,response){
         response.end();
       });
     });
+  }else if(pathname === '/update'){
+    fs.readdir('./data',(err,files)=>{
+      fs.readFile(`./data/${queryData.id}`,'utf8',(err, description) => {
+        var title = queryData.id; //주소의 id값을 가져옴
+        var list = templates.templateList(files);
+        var template = templates.templateHTML(title, list, 
+          `
+          <form action="/update_process" method="POST">
+          <input type="hidden" name="id" value="${title}">
+          <p><input type="text" name="title" placeholder="title" value=${title}></p>
+          <p>
+              <textarea name="description" placeholder="description">${description}</textarea>
+          </p>
+          <p>
+              <input type="submit" value="Submit">
+          </p>
+        </form>
+        `,`<a href="/create">create</a> <a href="/update?id=${title}">update</a>`);
+        response.writeHead(200);
+        response.end(template);
+      });
+  });
   }
   else{
     response.writeHead(404);

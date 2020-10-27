@@ -1,5 +1,5 @@
 module.exports = {
-    templateHTML:function(title, list,body){
+    templateHTML:function(title, list,body,control){
         return `
         <!doctype html>
         <html>
@@ -10,7 +10,7 @@ module.exports = {
         <body>
           <h1><a href="/">WEB</a></h1>
           ${list}
-          <a href="./create">create</a>
+          ${control}
           ${body}
         </body>
         </html>
