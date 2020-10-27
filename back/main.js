@@ -5,6 +5,7 @@ var url = require('url'); //require : 요구하다,가져오다
 var templates = require('./lib/templates.js');
 var qs = require('querystring');
 var path = require('path'); //사용자로부터 데이터를 보호하기 위해 사용한다.
+var sanitizeHtml = require('sanitize-html'); //출력되는 데이터를 필터링하기 위해 사용한다.
 
 var app = http.createServer(function(request,response){
     var _url = request.url;
@@ -27,12 +28,14 @@ var app = http.createServer(function(request,response){
           filteredId = path.parse(queryData.id).base;
           fs.readFile(`./data/${filteredId}`,'utf8',(err, description) => {
             var title = queryData.id; //주소의 id값을 가져옴
+            var sanitizedTitle = sanitizeHtml(title); //코드를 소독한다.(<script>와 같은 태그들이 작동하지 않도록)
+            var sanitizedDescription = sanitizeHtml(description,{allowedTags:['h1']}); //allowedTags : 해당 태그 허용 
             var list = templates.list(files);
-            var html = templates.html(title, list, `<h2>${title}</h2>${description}`,
+            var html = templates.html(sanitizedTitle, list, `<h2>${sanitizedTitle}</h2>${sanitizedDescription}`,
             `<a href="/create">create</a> 
-            <a href="/update?id=${title}">update</a> 
+            <a href="/update?id=${sanitizedTitle}">update</a> 
             <form action="/delete_process" method="post">
-              <input type="hidden" name="id" value="${title}">
+              <input type="hidden" name="id" value="${sanitizedTitle}">
               <input type="submit" value="delete">
             </form>
             `);
