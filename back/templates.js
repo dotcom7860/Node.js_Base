@@ -1,5 +1,5 @@
 //refactoring : 코드의 결과와는 상관없지만 내부의 코드 구조가 효율적으로 바뀌는 것
-module.exports = {
+var template = {
     html:function(title, list,body,control){
         return `
         <!doctype html>
@@ -26,3 +26,5 @@ module.exports = {
         return list;
     }
 }
+
+module.exports = template;

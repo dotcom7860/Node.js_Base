@@ -2,7 +2,7 @@
 var http = require('http');
 var fs = require('fs'); //file System
 var url = require('url'); //require : 요구하다,가져오다
-var templates = require('./template');
+var templates = require('./templates.js');
 var qs = require('querystring');
 
 var app = http.createServer(function(request,response){
