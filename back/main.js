@@ -2,8 +2,9 @@
 var http = require('http');
 var fs = require('fs'); //file System
 var url = require('url'); //require : 요구하다,가져오다
-var templates = require('./templates.js');
+var templates = require('./lib/templates.js');
 var qs = require('querystring');
+var path = require('path');
 
 var app = http.createServer(function(request,response){
     var _url = request.url;
@@ -23,7 +24,8 @@ var app = http.createServer(function(request,response){
       }
       else {
         fs.readdir('./data',(err,files)=>{
-          fs.readFile(`./data/${queryData.id}`,'utf8',(err, description) => {
+          filteredId = path.parse(queryData.id).base;
+          fs.readFile(`./data/${filteredId}`,'utf8',(err, description) => {
             var title = queryData.id; //주소의 id값을 가져옴
             var list = templates.list(files);
             var html = templates.html(title, list, `<h2>${title}</h2>${description}`,
@@ -75,7 +77,8 @@ var app = http.createServer(function(request,response){
     });
   }else if(pathname === '/update'){
     fs.readdir('./data',(err,files)=>{
-      fs.readFile(`./data/${queryData.id}`,'utf8',(err, description) => {
+      filteredId = path.parse(queryData.id).base;
+      fs.readFile(`./data/${filteredId}`,'utf8',(err, description) => {
         var title = queryData.id; //주소의 id값을 가져옴
         var list = templates.list(files);
         var html = templates.html(title, list, 
@@ -123,7 +126,8 @@ var app = http.createServer(function(request,response){
     request.on('end',function(){
       var post = qs.parse(body);
       var id = post.id;
-      fs.unlink(`data/${id}`,(err)=>{ //파일을 삭제할 때 사용(삭제할 파일,(콜백함수))
+      filteredId = path.parse(id).base;
+      fs.unlink(`data/${filteredId}`,(err)=>{ //파일을 삭제할 때 사용(삭제할 파일,(콜백함수))
         response.writeHead(302, {Location: `/`});
         response.end();
       });
