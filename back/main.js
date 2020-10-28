@@ -4,7 +4,7 @@ var fs = require('fs'); //file System
 var url = require('url'); //require : 요구하다,가져오다
 var templates = require('./lib/templates.js');
 var qs = require('querystring');
-var path = require('path'); //사용자로부터 데이터를 보호하기 위해 사용한다.
+var path = require('path'); //사용자로부터 입력된 데이터를 보호하기 위해 사용한다.
 var sanitizeHtml = require('sanitize-html'); //출력되는 데이터를 필터링하기 위해 사용한다.
 
 var app = http.createServer(function(request,response){
