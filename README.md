@@ -1,4 +1,4 @@
-# Node.js_Base
+# Node.js_Base (20.10.25 - 20.10.30)
 - 생활코딩 node.js 강의 따라해보기
 ## 강의링크
 - https://opentutorials.org/course/3332
